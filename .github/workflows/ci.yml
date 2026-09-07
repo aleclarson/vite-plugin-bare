@@ -28,14 +28,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Lint
-        run: pnpm exec oxlint
-
-      - name: Typecheck
+      - name: Check
         run: pnpm run check
-
-      - name: Format check
-        run: pnpm exec oxfmt --check
 
       - name: Test
         run: pnpm run --if-present test

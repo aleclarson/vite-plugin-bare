@@ -30,7 +30,7 @@
   },
   "scripts": {
     "build": "tsdown",
-    "check": "tsc -p tsconfig.json --noEmit",
+    "check": "oxlint && tsc -p tsconfig.json --noEmit && oxfmt --check",
     "device:dev": "vite --config test/device/vite.config.ts --host 0.0.0.0",
     "device:prepare": "node test/device/prepare.mjs",
     "format": "oxlint --fix && oxfmt",
