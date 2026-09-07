@@ -129,6 +129,7 @@ function resolveBareDevServerUrl(server: ViteDevServer, config: NormalizedBareVi
   const address = server.httpServer?.address()
   const port =
     typeof address === "object" && address ? address.port : (config.devServer.port ?? 5173)
+
   const host = config.devServer.host ?? discoverLanHost() ?? "127.0.0.1"
   const rootRelativeEntry = `/${relative(config.root, config.entry).split(sep).join("/")}`
   const url = new URL(`ws://${host}:${port}${BARE_WS_PATH}`)

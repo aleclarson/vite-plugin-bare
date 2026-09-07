@@ -29,10 +29,13 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Lint
-        run: pnpm run --if-present lint
+        run: pnpm exec oxlint
 
       - name: Typecheck
-        run: pnpm run --if-present typecheck
+        run: pnpm run check
+
+      - name: Format check
+        run: pnpm exec oxfmt --check
 
       - name: Test
         run: pnpm run --if-present test
