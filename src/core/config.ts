@@ -1,12 +1,10 @@
-import { isIP } from 'node:net'
-import { networkInterfaces } from 'node:os'
-import { resolve } from 'node:path'
-import {
-  DEFAULT_RUNTIME_GLOBALS,
-  type BareRuntimeGlobal,
-} from './runtime.js'
+import { isIP } from "node:net"
+import { networkInterfaces } from "node:os"
+import { resolve } from "node:path"
 
-export type { BareRuntimeGlobal } from './runtime.js'
+import { DEFAULT_RUNTIME_GLOBALS, type BareRuntimeGlobal } from "./runtime.js"
+
+export type { BareRuntimeGlobal } from "./runtime.js"
 
 /** Shared user configuration consumed by the dev plugin and production CLI. */
 export interface BareViteConfig {
@@ -15,15 +13,15 @@ export interface BareViteConfig {
   /** Stable worklet-shell globals and additional native/runtime modules. */
   runtime?: {
     /**
-     * Additional Web APIs installed before application startup. These are
-     * merged with and deduplicated against the default runtime globals.
+     * Additional Web APIs installed before application startup. These are merged with and
+     * deduplicated against the default runtime globals.
      *
      * @defaultValue abort controller, encoding, URL, fetch, and WebSocket.
      */
     globals?: BareRuntimeGlobal[]
     /**
-     * Additional package names treated as stable Bare runtime dependencies.
-     * Use this for native packages that do not follow the `bare-*` convention.
+     * Additional package names treated as stable Bare runtime dependencies. Use this for native
+     * packages that do not follow the `bare-*` convention.
      *
      * @defaultValue `[]`
      */
@@ -90,42 +88,33 @@ export interface NormalizedBareViteConfig {
   }
 }
 
-export const DEFAULT_BARE_CONDITIONS = ['bare', 'worklet', 'module']
+export const DEFAULT_BARE_CONDITIONS = ["bare", "worklet", "module"]
 export function normalizeBareViteConfig(
   config: BareViteConfig,
   root = process.cwd(),
 ): NormalizedBareViteConfig {
   if (!config.entry || !config.entry.trim()) {
-    throw new Error('vite-plugin-bare requires a non-empty entry path')
+    throw new Error("vite-plugin-bare requires a non-empty entry path")
   }
 
   const resolvedRoot = resolve(root)
+
   return {
     root: resolvedRoot,
     entry: resolve(resolvedRoot, config.entry),
     runtime: {
-      globals: [
-        ...new Set([
-          ...DEFAULT_RUNTIME_GLOBALS,
-          ...(config.runtime?.globals ?? []),
-        ]),
-      ],
+      globals: [...new Set([...DEFAULT_RUNTIME_GLOBALS, ...(config.runtime?.globals ?? [])])],
       modules: [...(config.runtime?.modules ?? [])],
     },
     resolve: {
-      conditions: [
-        ...new Set([
-          ...DEFAULT_BARE_CONDITIONS,
-          ...(config.resolve?.conditions ?? []),
-        ]),
-      ],
+      conditions: [...new Set([...DEFAULT_BARE_CONDITIONS, ...(config.resolve?.conditions ?? [])])],
     },
     devServer: {
       ...(config.devServer?.host ? { host: config.devServer.host } : {}),
       ...(config.devServer?.port ? { port: config.devServer.port } : {}),
     },
     build: {
-      outDir: resolve(resolvedRoot, config.build?.outDir ?? 'dist/bare'),
+      outDir: resolve(resolvedRoot, config.build?.outDir ?? "dist/bare"),
       hosts: [...(config.build?.hosts ?? [])],
     },
   }
@@ -134,14 +123,11 @@ export function normalizeBareViteConfig(
 export function discoverLanHost(): string | undefined {
   for (const addresses of Object.values(networkInterfaces())) {
     for (const address of addresses ?? []) {
-      if (
-        address.family === 'IPv4' &&
-        !address.internal &&
-        isIP(address.address) === 4
-      ) {
+      if (address.family === "IPv4" && !address.internal && isIP(address.address) === 4) {
         return address.address
       }
     }
   }
+
   return undefined
 }

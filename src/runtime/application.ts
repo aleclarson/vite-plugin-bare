@@ -1,4 +1,4 @@
-import type { ModuleRunner } from 'vite/module-runner'
+import type { ModuleRunner } from "vite/module-runner"
 
 export interface BareApplicationModule<Context = unknown> {
   start?: (context: Context) => unknown | Promise<unknown>
@@ -40,6 +40,7 @@ export class BareApplication<Context = unknown> {
 
   #enqueue(operation: () => Promise<void>): Promise<void> {
     const result = this.#operation.then(operation)
+
     this.#operation = result.catch(() => undefined)
     return result
   }

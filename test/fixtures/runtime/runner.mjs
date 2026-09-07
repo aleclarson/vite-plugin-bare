@@ -1,4 +1,4 @@
-import { startBareViteRuntime } from '../../../dist/runtime/index.js'
+import { startBareViteRuntime } from "../../../dist/runtime/index.js"
 
 const [serverUrl, entry] = Bare.argv.slice(2)
 
@@ -12,15 +12,25 @@ try {
   await startBareViteRuntime({
     serverUrl,
     entry,
-    context: { runtime: 'bare' },
+    context: { runtime: "bare" },
     reportError(error) {
-      report({ type: 'error', message: error.message })
+      report({
+        type: "error",
+        message: error.message,
+      })
     },
     reportStatus(status) {
-      report({ type: 'status', status })
+      report({
+        type: "status",
+        status,
+      })
     },
   })
 } catch (error) {
-  report({ type: 'error', message: error.message, stack: error.stack })
+  report({
+    type: "error",
+    message: error.message,
+    stack: error.stack,
+  })
   Bare.exit(1)
 }

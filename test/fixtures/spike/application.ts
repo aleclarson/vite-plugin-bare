@@ -1,3 +1,3 @@
-import pack from 'bare-pack'
+import pack from "bare-pack"
 
-export const externalResolved = typeof pack === 'function'
+export const externalResolved = typeof pack === "function"

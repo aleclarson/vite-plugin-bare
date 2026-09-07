@@ -1,6 +1,6 @@
-import { startBareViteRuntime } from '../../../dist/runtime/index.js'
+import { startBareViteRuntime } from "../../../dist/runtime/index.js"
 
-const [serverUrl, entry = '/app/application.ts'] = Bare.argv
+const [serverUrl, entry = "/app/application.ts"] = Bare.argv
 
 function report(event) {
   BareKit.IPC.write(`${JSON.stringify(event)}\n`)
@@ -14,12 +14,23 @@ try {
     entry,
     context: { report },
     reportError(error) {
-      report({ type: 'error', message: error.message, stack: error.stack })
+      report({
+        type: "error",
+        message: error.message,
+        stack: error.stack,
+      })
     },
     reportStatus(status) {
-      report({ type: 'status', status })
+      report({
+        type: "status",
+        status,
+      })
     },
   })
 } catch (error) {
-  report({ type: 'error', message: error.message, stack: error.stack })
+  report({
+    type: "error",
+    message: error.message,
+    stack: error.stack,
+  })
 }

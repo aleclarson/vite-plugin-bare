@@ -1,4 +1,4 @@
 allowBuilds:
   esbuild: true
 minimumReleaseAgeExclude:
-  - '@coreframe/oxc-config@0.1.0'
+  - "@coreframe/oxc-config@0.1.0"

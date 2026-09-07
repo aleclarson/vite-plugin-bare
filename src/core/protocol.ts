@@ -1,12 +1,12 @@
-import type { HotPayload } from 'vite'
+import type { HotPayload } from "vite"
 
 export interface BareRuntimeStatus {
-  type: 'connected' | 'application-started' | 'application-restarted' | 'error'
+  type: "connected" | "application-started" | "application-restarted" | "error"
   message?: string
 }
 
 export interface WorkletRestartRequired {
-  type: 'worklet-restart-required'
+  type: "worklet-restart-required"
   files: string[]
   reason: string
 }
@@ -19,9 +19,10 @@ export function encodePayload(payload: BareViteWirePayload): string {
 
 export function decodePayload(source: string): BareViteWirePayload {
   const payload: unknown = JSON.parse(source)
-  if (!payload || typeof payload !== 'object' || !('type' in payload)) {
-    throw new TypeError('Invalid Bare Vite transport payload')
+
+  if (!payload || typeof payload !== "object" || !("type" in payload)) {
+    throw new TypeError("Invalid Bare Vite transport payload")
   }
+
   return payload as BareViteWirePayload
 }
-

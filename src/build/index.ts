@@ -1,20 +1,22 @@
-import { mkdir, writeFile } from 'node:fs/promises'
-import { join, resolve } from 'node:path'
-import { build, type Plugin } from 'vite'
+import { mkdir, writeFile } from "node:fs/promises"
+import { join, resolve } from "node:path"
+
+import { build, type Plugin } from "vite"
+
 import {
   normalizeBareViteConfig,
   type BareViteConfig,
   type NormalizedBareViteConfig,
-} from '../core/config.js'
-import { createBareExternalPredicate } from '../core/modules.js'
-import { loadBareViteConfig } from './config.js'
-import { packBareOutput } from './pack.js'
+} from "../core/config.js"
+import { createBareExternalPredicate } from "../core/modules.js"
+import { loadBareViteConfig } from "./config.js"
+import { packBareOutput } from "./pack.js"
 
 /** Options that control programmatic production builds. */
 export interface BuildBareAppOptions {
   /**
-   * Bare configuration. When omitted, settings are discovered from the
-   * `bare(...)` plugin in the Vite config.
+   * Bare configuration. When omitted, settings are discovered from the `bare(...)` plugin in the
+   * Vite config.
    */
   config?: BareViteConfig
   /**
@@ -24,8 +26,8 @@ export interface BuildBareAppOptions {
    */
   root?: string
   /**
-   * Vite config path. Omit for Vite's automatic discovery, or pass `false` to
-   * disable Vite config loading. A direct `config` is required when false.
+   * Vite config path. Omit for Vite's automatic discovery, or pass `false` to disable Vite config
+   * loading. A direct `config` is required when false.
    */
   configFile?: string | false
   /**
@@ -35,8 +37,8 @@ export interface BuildBareAppOptions {
    */
   outDir?: string
   /**
-   * Bare Pack target identifiers, overriding `config.build.hosts`.
-   * An empty array uses the configured hosts.
+   * Bare Pack target identifiers, overriding `config.build.hosts`. An empty array uses the
+   * configured hosts.
    */
   hosts?: string[]
 }
@@ -51,28 +53,25 @@ export interface BuildBareAppResult {
 /**
  * Run the Vite production build and package its output with Bare Pack.
  *
- * Supply `options.config` to avoid discovering Bare settings from the Vite
- * plugin. The Vite config itself still loads unless `configFile` is `false`.
+ * Supply `options.config` to avoid discovering Bare settings from the Vite plugin. The Vite config
+ * itself still loads unless `configFile` is `false`.
  */
-export async function buildBareApp(
-  options: BuildBareAppOptions = {},
-): Promise<BuildBareAppResult> {
+export async function buildBareApp(options: BuildBareAppOptions = {}): Promise<BuildBareAppResult> {
   const loaded = options.config
     ? {
         config: normalizeBareViteConfig(options.config, options.root),
         configFile: options.configFile,
       }
     : await loadDiscoveredConfig(options.root, options.configFile)
+
   const { config } = loaded
   const outDir = options.outDir ? resolve(config.root, options.outDir) : config.build.outDir
-  const intermediateDir = join(outDir, '.vite')
+  const intermediateDir = join(outDir, ".vite")
   const hosts = options.hosts?.length ? options.hosts : config.build.hosts
 
   const result = await build({
     root: config.root,
-    ...(loaded.configFile === undefined
-      ? {}
-      : { configFile: loaded.configFile }),
+    ...(loaded.configFile === undefined ? {} : { configFile: loaded.configFile }),
     plugins: [bareBuildExternals(config)],
     build: {
       outDir: intermediateDir,
@@ -82,8 +81,8 @@ export async function buildBareApp(
       rolldownOptions: {
         external: createBareExternalPredicate(config),
         output: {
-          entryFileNames: 'application.mjs',
-          chunkFileNames: 'chunks/[name]-[hash].mjs',
+          entryFileNames: "application.mjs",
+          chunkFileNames: "chunks/[name]-[hash].mjs",
         },
       },
     },
@@ -94,19 +93,25 @@ export async function buildBareApp(
   })
 
   const output = firstOutput(result)
-  const entry = output.output.find((item) => item.type === 'chunk' && item.isEntry)
-  if (!entry) throw new Error('Vite build did not produce an entry chunk')
+  const entry = output.output.find((item) => item.type === "chunk" && item.isEntry)
+
+  if (!entry) throw new Error("Vite build did not produce an entry chunk")
 
   const intermediateEntry = join(intermediateDir, entry.fileName)
-  const artifact = join(outDir, 'bundle.bare')
+  const artifact = join(outDir, "bundle.bare")
   const bundle = await packBareOutput({
     entry: intermediateEntry,
     hosts,
-    linked: hosts.some((host) => host.startsWith('ios') || host.startsWith('android')),
+    linked: hosts.some((host) => host.startsWith("ios") || host.startsWith("android")),
   })
+
   await mkdir(outDir, { recursive: true })
   await writeFile(artifact, bundle)
-  return { artifact, intermediateEntry, hosts }
+  return {
+    artifact,
+    intermediateEntry,
+    hosts,
+  }
 }
 
 async function loadDiscoveredConfig(
@@ -115,35 +120,37 @@ async function loadDiscoveredConfig(
 ) {
   if (configFile === false) {
     throw new Error(
-      'configFile cannot be false when Bare config discovery is required; pass options.config directly',
+      "configFile cannot be false when Bare config discovery is required; pass options.config directly",
     )
   }
+
   return loadBareViteConfig(root, configFile)
 }
 
 function bareBuildExternals(config: NormalizedBareViteConfig): Plugin {
   return {
-    name: 'vite-plugin-bare:build-externals',
-    apply: 'build',
-    enforce: 'pre',
+    name: "vite-plugin-bare:build-externals",
+    apply: "build",
+    enforce: "pre",
     resolveId(source) {
       if (createBareExternalPredicate(config)(source)) {
-        return { id: source, external: true }
+        return {
+          id: source,
+          external: true,
+        }
       }
     },
   }
 }
 
-function firstOutput(
-  result: Awaited<ReturnType<typeof build>>,
-): BuildOutput {
-  if ('on' in result) throw new Error('Watch mode is not supported by bare-vite build')
+function firstOutput(result: Awaited<ReturnType<typeof build>>): BuildOutput {
+  if ("on" in result) throw new Error("Watch mode is not supported by bare-vite build")
   return (Array.isArray(result) ? result[0]! : result) as unknown as BuildOutput
 }
 
 interface BuildOutput {
   output: Array<{
-    type: 'asset' | 'chunk'
+    type: "asset" | "chunk"
     fileName: string
     isEntry?: boolean
   }>

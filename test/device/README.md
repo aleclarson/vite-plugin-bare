@@ -75,7 +75,21 @@ The on-screen log should contain a `start` event with `generation: 1`,
 `value: 1`, and all global checks set to `true`:
 
 ```json
-{"type":"start","generation":1,"value":1,"platform":"...","arch":"...","globals":{"AbortController":true,"TextEncoder":true,"TextDecoder":true,"URL":true,"fetch":true,"WebSocket":true}}
+{
+  "type": "start",
+  "generation": 1,
+  "value": 1,
+  "platform": "...",
+  "arch": "...",
+  "globals": {
+    "AbortController": true,
+    "TextEncoder": true,
+    "TextDecoder": true,
+    "URL": true,
+    "fetch": true,
+    "WebSocket": true
+  }
+}
 ```
 
 Then perform these checks:

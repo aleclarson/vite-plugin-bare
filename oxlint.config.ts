@@ -1,6 +1,5 @@
-import { defineConfig } from "oxlint"
-
 import { createOxlintConfig } from "@coreframe/oxc-config/oxlint"
+import { defineConfig } from "oxlint"
 
 export default defineConfig({
   ...createOxlintConfig({ react: false }),

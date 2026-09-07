@@ -1,11 +1,10 @@
-import type { EnvironmentOptions } from 'vite'
-import type { NormalizedBareViteConfig } from './config.js'
+import type { EnvironmentOptions } from "vite"
 
-export function createBareEnvironmentOptions(
-  config: NormalizedBareViteConfig,
-): EnvironmentOptions {
+import type { NormalizedBareViteConfig } from "./config.js"
+
+export function createBareEnvironmentOptions(config: NormalizedBareViteConfig): EnvironmentOptions {
   return {
-    consumer: 'server',
+    consumer: "server",
     resolve: {
       conditions: config.resolve.conditions,
     },

@@ -21,13 +21,13 @@ required to run the development shell on a device.
 ## Configure Vite
 
 ```ts
-import { defineConfig } from 'vite'
-import bare from 'vite-plugin-bare'
+import { defineConfig } from "vite"
+import bare from "vite-plugin-bare"
 
 export default defineConfig({
   plugins: [
     bare({
-      entry: './src/application.ts',
+      entry: "./src/application.ts",
     }),
   ],
 })
@@ -42,8 +42,8 @@ Set an address explicitly when LAN discovery chooses the wrong interface:
 
 ```ts
 bare({
-  entry: './src/application.ts',
-  devServer: { host: '192.168.1.100' },
+  entry: "./src/application.ts",
+  devServer: { host: "192.168.1.100" },
 })
 ```
 
@@ -53,11 +53,11 @@ The host application owns worklet creation and Flutter RPC. Once the worklet
 has received the server URL, start the stable runtime shell:
 
 ```ts
-import { startBareViteRuntime } from 'vite-plugin-bare/runtime'
+import { startBareViteRuntime } from "vite-plugin-bare/runtime"
 
 const runtime = await startBareViteRuntime({
   serverUrl,
-  entry: '/src/application.ts',
+  entry: "/src/application.ts",
   context: { sendToFlutter },
   reportError: sendErrorToFlutter,
 })
@@ -97,13 +97,13 @@ Bare config discovery from `vite.config`; Vite still loads that file for its
 plugins, aliases, and defines unless `configFile` is explicitly `false`.
 
 ```ts
-import { buildBareApp } from 'vite-plugin-bare'
+import { buildBareApp } from "vite-plugin-bare"
 
 const result = await buildBareApp({
   root: process.cwd(),
   config: {
-    entry: './src/application.ts',
-    build: { outDir: 'dist/bare', hosts: ['ios-arm64'] },
+    entry: "./src/application.ts",
+    build: { outDir: "dist/bare", hosts: ["ios-arm64"] },
   },
 })
 
@@ -116,7 +116,7 @@ production-only import is preferable. For a build with no Vite config file:
 ```ts
 await buildBareApp({
   configFile: false,
-  config: { entry: './src/application.ts' },
+  config: { entry: "./src/application.ts" },
 })
 ```
 
@@ -126,7 +126,7 @@ await buildBareApp({
 interface BareViteConfig {
   entry: string
   runtime?: {
-    globals?: Array<'fetch' | 'websocket' | 'url' | 'encoding' | 'abort-controller'>
+    globals?: Array<"fetch" | "websocket" | "url" | "encoding" | "abort-controller">
     modules?: string[]
   }
   resolve?: { conditions?: string[] }
