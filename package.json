@@ -29,6 +29,7 @@
     "check": "tsc -p tsconfig.json --noEmit",
     "device:dev": "vite --config test/device/vite.config.ts --host 0.0.0.0",
     "device:prepare": "node test/device/prepare.mjs",
+    "format": "oxlint --fix && oxfmt",
     "pretest": "npm run build",
     "pretest:watch": "npm run build",
     "test": "vitest run",
@@ -65,6 +66,7 @@
     }
   },
   "devDependencies": {
+    "@coreframe/oxc-config": "^0.1.0",
     "@types/node": "^24.3.1",
     "@types/ws": "^8.18.1",
     "bare-abort-controller": "^1.1.2",
@@ -76,6 +78,8 @@
     "bare-runtime": "1.31.0",
     "bare-url": "^2.5.4",
     "bare-ws": "^3.1.0",
+    "oxfmt": "^0.66.0",
+    "oxlint": "^1.81.0",
     "tsdown": "^0.21.0",
     "typescript": "^5.9.2",
     "vite": "^8.2.2",
