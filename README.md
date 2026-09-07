@@ -158,8 +158,11 @@ A separate test builds, mounts, and executes the raw production bundle inside
 Bare. `npm test` runs the tsdown build first so this suite exercises the
 publishable runtime output.
 
-Physical iOS/Android BareKit validation remains required in a host application
-because this repository does not contain a Flutter shell or device harness.
+The repository also includes a manual native BareKit harness for physical iOS
+and Android validation. It exercises linked native addons, runtime globals,
+accepted HMR, application restart, and standalone production startup. See the
+[device validation guide](test/device/README.md). A consumer's Flutter RPC
+layer remains a separate integration boundary.
 
 Run the repository checks with:
 

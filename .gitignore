@@ -3,3 +3,10 @@ dist/
 coverage/
 *.log
 .DS_Store
+test/device/generated/
+test/device/ios/BareViteDevice.xcodeproj/
+test/device/ios/Info.plist
+test/device/ios/project.generated.yml
+test/device/android/.gradle/
+test/device/android/build/
+test/device/android/app/build/

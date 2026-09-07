@@ -27,6 +27,8 @@
   "scripts": {
     "build": "tsdown",
     "check": "tsc -p tsconfig.json --noEmit",
+    "device:dev": "vite --config test/device/vite.config.ts --host 0.0.0.0",
+    "device:prepare": "node test/device/prepare.mjs",
     "pretest": "npm run build",
     "pretest:watch": "npm run build",
     "test": "vitest run",
@@ -69,6 +71,7 @@
     "bare-encoding": "^1.0.3",
     "bare-fetch": "^3.2.1",
     "bare-fs": "4.8.1",
+    "bare-link": "3.3.0",
     "bare-module": "6.4.0",
     "bare-runtime": "1.31.0",
     "bare-url": "^2.5.4",

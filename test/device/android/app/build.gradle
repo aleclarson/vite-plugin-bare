@@ -1,0 +1,33 @@
+plugins {
+  id "com.android.application"
+}
+
+android {
+  namespace "dev.alloc.vitebare.device"
+  compileSdk 35
+
+  defaultConfig {
+    applicationId "dev.alloc.vitebare.device"
+    minSdk 31
+    targetSdk 35
+    versionCode 1
+    versionName "1.0"
+  }
+
+  sourceSets {
+    main {
+      assets.srcDirs "$rootDir/../generated/bundles"
+      jniLibs.srcDirs "$rootDir/../generated/prebuilds/android/bare-kit/jni", "$rootDir/../generated/addons/android"
+    }
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_17
+    targetCompatibility JavaVersion.VERSION_17
+  }
+}
+
+dependencies {
+  implementation files("$rootDir/../generated/prebuilds/android/bare-kit/classes.jar")
+  implementation fileTree(dir: "$rootDir/../generated/addons/android", include: ["*.classes.jar"])
+}
