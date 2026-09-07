@@ -30,6 +30,24 @@ describe('shared core', () => {
     })
   })
 
+  it('adds configured runtime globals without replacing or duplicating defaults', () => {
+    const config = normalizeBareViteConfig(
+      {
+        entry: './application.ts',
+        runtime: { globals: ['fetch', 'websocket'] },
+      },
+      '/project',
+    )
+
+    expect(config.runtime.globals).toEqual([
+      'abort-controller',
+      'encoding',
+      'url',
+      'fetch',
+      'websocket',
+    ])
+  })
+
   it.each([
     ['bare', true],
     ['bare-ws', true],
@@ -46,4 +64,3 @@ describe('shared core', () => {
     expect(packageNameFromId('package/subpath?raw')).toBe('package')
   })
 })
-

@@ -140,6 +140,10 @@ follow the `bare-*` naming convention. Shared core helpers perform config
 normalization, resolution conditions, and external classification in both dev
 and production.
 
+`runtime.globals` is additive: configured values are merged with the default
+abort controller, encoding, URL, fetch, and WebSocket globals and then
+deduplicated.
+
 ## Validation
 
 The automated feasibility spike executes transformed TypeScript through the

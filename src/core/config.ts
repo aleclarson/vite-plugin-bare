@@ -15,7 +15,8 @@ export interface BareViteConfig {
   /** Stable worklet-shell globals and additional native/runtime modules. */
   runtime?: {
     /**
-     * Web APIs installed before application startup.
+     * Additional Web APIs installed before application startup. These are
+     * merged with and deduplicated against the default runtime globals.
      *
      * @defaultValue abort controller, encoding, URL, fetch, and WebSocket.
      */
@@ -103,7 +104,12 @@ export function normalizeBareViteConfig(
     root: resolvedRoot,
     entry: resolve(resolvedRoot, config.entry),
     runtime: {
-      globals: [...(config.runtime?.globals ?? DEFAULT_RUNTIME_GLOBALS)],
+      globals: [
+        ...new Set([
+          ...DEFAULT_RUNTIME_GLOBALS,
+          ...(config.runtime?.globals ?? []),
+        ]),
+      ],
       modules: [...(config.runtime?.modules ?? [])],
     },
     resolve: {
