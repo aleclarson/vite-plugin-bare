@@ -1,0 +1,79 @@
+{
+  "name": "vite-plugin-bare",
+  "version": "0.0.0",
+  "description": "Run Vite module graphs in Bare during development and package them for production.",
+  "type": "module",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./runtime": {
+      "types": "./dist/runtime/index.d.ts",
+      "import": "./dist/runtime/index.js"
+    }
+  },
+  "bin": {
+    "bare-vite": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "check": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@alloc/cmd-ts": "^0.17.1",
+    "bare-pack": "^2.2.2",
+    "ws": "^8.18.3"
+  },
+  "peerDependencies": {
+    "bare-abort-controller": ">=1",
+    "bare-encoding": ">=1",
+    "bare-fetch": ">=3",
+    "bare-url": ">=2",
+    "bare-ws": ">=2",
+    "vite": ">=8.0.0"
+  },
+  "peerDependenciesMeta": {
+    "bare-abort-controller": {
+      "optional": true
+    },
+    "bare-encoding": {
+      "optional": true
+    },
+    "bare-fetch": {
+      "optional": true
+    },
+    "bare-url": {
+      "optional": true
+    },
+    "bare-ws": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.1",
+    "@types/ws": "^8.18.1",
+    "bare-abort-controller": "^1.1.2",
+    "bare-encoding": "^1.0.3",
+    "bare-fetch": "^3.2.1",
+    "bare-url": "^2.5.4",
+    "bare-ws": "^3.1.0",
+    "tsdown": "^0.21.0",
+    "typescript": "^5.9.2",
+    "vite": "^8.2.2",
+    "vitest": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alloc/vite-plugin-bare.git"
+  }
+}
