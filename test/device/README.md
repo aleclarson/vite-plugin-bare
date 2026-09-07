@@ -104,3 +104,20 @@ This harness validates BareKit, linked native addons, runtime globals, Vite
 transport, HMR, application restart, and the production artifact. A consumer's
 Flutter-to-worklet RPC layer remains separate and should be tested in that
 consumer application.
+
+## Scripted simulator startup
+
+The native hosts also expose opt-in startup controls for repeatable simulator
+checks. Normal interactive startup is unchanged.
+
+On iOS, set `BARE_VITE_DEVICE_MODE` to `development` or `production` in the
+launched process environment. Development mode also accepts
+`BARE_VITE_SERVER_URL`.
+
+On Android, pass the same values as `mode` and `serverUrl` string extras:
+
+```sh
+adb shell am start -n dev.alloc.vitebare.device/.MainActivity \
+  --es mode development \
+  --es serverUrl 'ws://10.0.2.2:5173/__bare_vite?environment=bare'
+```

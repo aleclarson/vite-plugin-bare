@@ -50,6 +50,16 @@
     [stack.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor constant:16],
     [stack.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor constant:-16],
   ]];
+
+  NSDictionary<NSString *, NSString *> *environment = NSProcessInfo.processInfo.environment;
+  NSString *mode = environment[@"BARE_VITE_DEVICE_MODE"];
+  NSString *serverURL = environment[@"BARE_VITE_SERVER_URL"];
+  if (serverURL.length > 0) self.serverURL.text = serverURL;
+  if ([mode isEqualToString:@"development"]) {
+    [self startDevelopment];
+  } else if ([mode isEqualToString:@"production"]) {
+    [self startProduction];
+  }
 }
 
 - (void)startDevelopment {
@@ -73,9 +83,9 @@
   }
 
   self.worklet = [[BareWorklet alloc] initWithConfiguration:nil];
+  [self.worklet start:@"/app.bundle" source:source arguments:arguments];
   self.ipc = [[BareIPC alloc] initWithWorklet:self.worklet];
   [self readNext];
-  [self.worklet start:@"/app.bundle" source:source arguments:arguments];
 }
 
 - (void)readNext {

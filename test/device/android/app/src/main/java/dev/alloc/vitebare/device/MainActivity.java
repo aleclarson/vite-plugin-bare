@@ -60,6 +60,15 @@ public class MainActivity extends Activity {
       1
     ));
     setContentView(content);
+
+    String server = getIntent().getStringExtra("serverUrl");
+    if (server != null) serverUrl.setText(server);
+    String mode = getIntent().getStringExtra("mode");
+    if ("development".equals(mode)) {
+      startWorklet("dev.bundle", true);
+    } else if ("production".equals(mode)) {
+      startWorklet("production.bundle", false);
+    }
   }
 
   private void startWorklet(String asset, boolean development) {
@@ -74,12 +83,12 @@ public class MainActivity extends Activity {
       }
 
       worklet = new Worklet(null);
-      ipc = new IPC(worklet);
-      readNext();
       String[] arguments = development
         ? new String[] { serverUrl.getText().toString(), "/app/application.ts" }
         : null;
       worklet.start("/app.bundle", ByteBuffer.wrap(source), arguments);
+      ipc = new IPC(worklet);
+      readNext();
     } catch (IOException error) {
       appendLine("Host error: " + error.getMessage());
     }
