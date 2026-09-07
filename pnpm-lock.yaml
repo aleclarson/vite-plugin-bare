@@ -30,6 +30,9 @@ importers:
       bare-abort-controller:
         specifier: ^1.1.2
         version: 1.1.2
+      bare-buffer:
+        specifier: ^3.7.1
+        version: 3.7.1
       bare-encoding:
         specifier: ^1.0.3
         version: 1.0.3(bare-buffer@3.7.1)
