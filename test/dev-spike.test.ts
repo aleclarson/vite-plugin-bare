@@ -98,20 +98,40 @@ describe('Bare feasibility spike', () => {
       const address = server.httpServer?.address()
       if (!address || typeof address === 'string') throw new Error('Missing Vite port')
       let connections = 0
+      const payloads: unknown[] = []
       const transport = createBareViteTransport({
         url: `ws://127.0.0.1:${address.port}/__bare_vite?environment=bare`,
         createSocket: (url) => {
           connections += 1
           return new NodeSocketAdapter(url)
         },
+        onPayload: (payload) => {
+          payloads.push(payload)
+        },
       })
       const runner = new ModuleRunner(
         { transport, createImportMeta: createNodeImportMeta },
         new ESModulesEvaluator(),
       )
-      const application = await runner.import<{ current: number }>('/application.ts')
+      let application = await runner.import<{ current: number }>('/application.ts')
       expect(application.current).toBe(1)
 
+      // Let the initial watcher scan settle. A slow platform can report the
+      // fixture's creation as a reload, in which case refresh the namespace
+      // before creating the one change this assertion intends to observe.
+      await new Promise((resolve) => setTimeout(resolve, 300))
+      if (
+        payloads.some(
+          (payload) =>
+            !!payload &&
+            typeof payload === 'object' &&
+            'type' in payload &&
+            payload.type === 'full-reload',
+        )
+      ) {
+        application = await runner.import<{ current: number }>('/application.ts')
+      }
+      payloads.length = 0
       await writeFile(valueFile, 'export const value = 2\n')
       await expect.poll(() => application.current, { timeout: 3_000 }).toBe(2)
       expect(connections).toBe(1)

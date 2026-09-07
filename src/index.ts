@@ -1,3 +1,8 @@
 export { default } from './plugin/index.js'
+export { buildBareApp } from './build/index.js'
+export type {
+  BuildBareAppOptions,
+  BuildBareAppResult,
+} from './build/index.js'
 export type { BareViteConfig } from './core/config.js'
 export type { BareRuntimeGlobal } from './core/runtime.js'

@@ -92,6 +92,34 @@ artifact is `bundle.bare` in the configured output directory. Vite owns normal
 JavaScript dependencies and transforms; Bare Pack owns Bare modules, native
 addons, assets, and host-specific linking.
 
+Production builds are also available as a public API. Pass `config` to bypass
+Bare config discovery from `vite.config`; Vite still loads that file for its
+plugins, aliases, and defines unless `configFile` is explicitly `false`.
+
+```ts
+import { buildBareApp } from 'vite-plugin-bare'
+
+const result = await buildBareApp({
+  root: process.cwd(),
+  config: {
+    entry: './src/application.ts',
+    build: { outDir: 'dist/bare', hosts: ['ios-arm64'] },
+  },
+})
+
+console.log(result.artifact)
+```
+
+The same function is available from `vite-plugin-bare/build` when a dedicated
+production-only import is preferable. For a build with no Vite config file:
+
+```ts
+await buildBareApp({
+  configFile: false,
+  config: { entry: './src/application.ts' },
+})
+```
+
 ## Configuration
 
 ```ts
