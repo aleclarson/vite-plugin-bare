@@ -147,11 +147,19 @@ deduplicated.
 ## Validation
 
 The automated feasibility spike executes transformed TypeScript through the
-custom WebSocket transport, resolves a `bare-*` external through Vite's default
-`ESModulesEvaluator`, and applies accepted HMR without replacing the runner or
-connection. Physical iOS/Android BareKit validation remains required in a host
-application because this repository does not contain a Flutter shell or device
-harness.
+custom WebSocket transport and resolves a `bare-*` external through Vite's
+default `ESModulesEvaluator`.
+
+The runtime integration suite also launches a pinned desktop Bare binary. It
+imports the compiled `vite-plugin-bare/runtime` entry, connects with the real
+`bare-ws` transport, verifies every default runtime global, applies accepted
+HMR, and performs an application restart without replacing the Bare process.
+A separate test builds, mounts, and executes the raw production bundle inside
+Bare. `npm test` runs the tsdown build first so this suite exercises the
+publishable runtime output.
+
+Physical iOS/Android BareKit validation remains required in a host application
+because this repository does not contain a Flutter shell or device harness.
 
 Run the repository checks with:
 

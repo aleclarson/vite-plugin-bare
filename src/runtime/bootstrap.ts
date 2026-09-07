@@ -1,4 +1,4 @@
-import { ESModulesEvaluator, ModuleRunner } from 'vite/module-runner'
+import type { ModuleRunner } from 'vite/module-runner'
 import type { HotPayload } from 'vite'
 import {
   DEFAULT_RUNTIME_GLOBALS,
@@ -72,6 +72,7 @@ export async function startBareViteRuntime<Context = unknown>(
   if (bare) installBareErrorHandlers(bare, (error) => options.reportError?.(error))
 
   await installBareGlobals(options.globals ?? DEFAULT_RUNTIME_GLOBALS)
+  const { ESModulesEvaluator, ModuleRunner } = await import('vite/module-runner')
 
   let application: BareApplication<Context>
   let restartScheduled = false

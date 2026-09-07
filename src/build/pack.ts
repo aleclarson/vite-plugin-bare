@@ -23,9 +23,11 @@ export interface PackBareOptions {
 }
 
 export async function packBareOutput(options: PackBareOptions): Promise<Uint8Array> {
+  const entryUrl = pathToFileURL(options.entry)
   const bundle = await pack(
-    pathToFileURL(options.entry) as unknown as BareURL,
+    entryUrl as unknown as BareURL,
     {
+      base: new URL('.', entryUrl) as unknown as BareURL,
       ...(options.hosts?.length ? { hosts: options.hosts } : {}),
       ...(options.linked === undefined ? {} : { linked: options.linked }),
     },
