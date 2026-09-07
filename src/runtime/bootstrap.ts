@@ -18,13 +18,44 @@ import {
 
 /** Inputs supplied by the host when its long-lived Bare worklet starts. */
 export interface StartBareViteRuntimeOptions<Context = unknown> {
+  /**
+   * Full WebSocket URL printed by the Vite plugin and passed into the worklet
+   * by the host application.
+   */
   serverUrl: string
+  /**
+   * Vite module URL for the application entry, such as
+   * `/src/application.ts`.
+   */
   entry: string
+  /** Value passed to the application's optional `start(context)` export. */
   context: Context
+  /**
+   * Bare process event emitter used to catch fatal runtime errors.
+   *
+   * @defaultValue `globalThis.Bare` when it exists.
+   */
   bare?: BareErrorEmitter
+  /**
+   * Bare-backed Web APIs to install before importing the application.
+   *
+   * @defaultValue abort controller, encoding, URL, fetch, and WebSocket.
+   */
   globals?: BareRuntimeGlobal[]
+  /**
+   * Receives startup, transport, application-restart, uncaught-exception, and
+   * unhandled-rejection errors. The host can forward these over Flutter RPC.
+   */
   reportError?: (error: SerializedRuntimeError | Error) => void
+  /**
+   * Receives lifecycle status identifiers such as `application-started` and
+   * `application-restarted`.
+   */
   reportStatus?: (status: string) => void
+  /**
+   * Low-level socket and reconnection overrides. The runtime owns the server
+   * URL and payload/error hooks, so callers cannot replace those fields here.
+   */
   transport?: Omit<BareViteTransportOptions, 'url' | 'onPayload' | 'onError'>
 }
 

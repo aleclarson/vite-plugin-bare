@@ -12,15 +12,32 @@ import { packBareOutput } from './pack.js'
 
 /** Options that control programmatic production builds. */
 export interface BuildBareAppOptions {
-  /** Bare configuration. When omitted, it is read from `bare(...)` in Vite config. */
+  /**
+   * Bare configuration. When omitted, settings are discovered from the
+   * `bare(...)` plugin in the Vite config.
+   */
   config?: BareViteConfig
-  /** Project root used to resolve a directly supplied config. */
+  /**
+   * Project root used to resolve entry and output paths.
+   *
+   * @defaultValue `process.cwd()`
+   */
   root?: string
-  /** Vite config path, automatic discovery when omitted, or `false` to disable it. */
+  /**
+   * Vite config path. Omit for Vite's automatic discovery, or pass `false` to
+   * disable Vite config loading. A direct `config` is required when false.
+   */
   configFile?: string | false
-  /** Overrides `config.build.outDir`. */
+  /**
+   * Output directory relative to `root`, overriding `config.build.outDir`.
+   *
+   * @defaultValue `dist/bare`
+   */
   outDir?: string
-  /** Overrides `config.build.hosts`. */
+  /**
+   * Bare Pack target identifiers, overriding `config.build.hosts`.
+   * An empty array uses the configured hosts.
+   */
   hosts?: string[]
 }
 

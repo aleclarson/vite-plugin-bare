@@ -14,21 +14,57 @@ export interface BareViteConfig {
   entry: string
   /** Stable worklet-shell globals and additional native/runtime modules. */
   runtime?: {
+    /**
+     * Web APIs installed before application startup.
+     *
+     * @defaultValue abort controller, encoding, URL, fetch, and WebSocket.
+     */
     globals?: BareRuntimeGlobal[]
+    /**
+     * Additional package names treated as stable Bare runtime dependencies.
+     * Use this for native packages that do not follow the `bare-*` convention.
+     *
+     * @defaultValue `[]`
+     */
     modules?: string[]
   }
   /** Conditions appended to the default Bare resolution conditions. */
   resolve?: {
+    /**
+     * Extra package-export conditions after `bare`, `worklet`, and `module`.
+     *
+     * @defaultValue `[]`
+     */
     conditions?: string[]
   }
   /** Address advertised to a physical device during development. */
   devServer?: {
+    /**
+     * LAN hostname or IP address advertised in the worklet WebSocket URL.
+     *
+     * @defaultValue The first discoverable non-internal IPv4 address.
+     */
     host?: string
+    /**
+     * Vite HTTP server port.
+     *
+     * @defaultValue Vite's configured port, normally `5173`.
+     */
     port?: number
   }
   /** Production artifact location and Bare Pack target hosts. */
   build?: {
+    /**
+     * Output directory relative to the Vite project root.
+     *
+     * @defaultValue `dist/bare`
+     */
     outDir?: string
+    /**
+     * Bare Pack target identifiers, such as `ios-arm64` or `android-arm64`.
+     *
+     * @defaultValue Bare Pack's current host.
+     */
     hosts?: string[]
   }
 }

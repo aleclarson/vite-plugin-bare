@@ -4,9 +4,21 @@ import pack from 'bare-pack'
 import type BareURL from 'bare-url'
 import type BareBuffer from 'bare-buffer'
 
+/** Inputs for packaging an existing Vite entry chunk with Bare Pack. */
 export interface PackBareOptions {
+  /** Absolute filesystem path to the Vite-generated entry chunk. */
   entry: string
+  /**
+   * Bare target identifiers included in the bundle, such as `ios-arm64`.
+   *
+   * @defaultValue Bare Pack's current host.
+   */
   hosts?: string[]
+  /**
+   * Whether native addons resolve through the `linked:` protocol.
+   *
+   * @defaultValue `false`
+   */
   linked?: boolean
 }
 

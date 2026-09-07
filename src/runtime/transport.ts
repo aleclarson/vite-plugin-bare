@@ -13,11 +13,31 @@ export interface BareSocket {
   end(): void
 }
 
+/** Low-level controls for the Bare-to-Vite module-runner connection. */
 export interface BareViteTransportOptions {
+  /**
+   * Full WebSocket endpoint, including the Bare environment query parameter.
+   */
   url: string
+  /**
+   * Delay in milliseconds before reconnecting after an unexpected close.
+   *
+   * @defaultValue `500`
+   */
   reconnectDelay?: number
+  /**
+   * Creates the transport socket. Primarily useful for alternate Bare socket
+   * implementations and deterministic tests.
+   *
+   * @defaultValue A `bare-ws` socket.
+   */
   createSocket?: (url: string) => BareSocket
+  /**
+   * Observes each decoded Vite payload before it reaches `ModuleRunner`.
+   * Returning a promise does not delay delivery to `ModuleRunner`.
+   */
   onPayload?: (payload: HotPayload) => void | Promise<void>
+  /** Receives socket errors and invalid JSON payload errors. */
   onError?: (error: Error) => void
 }
 
