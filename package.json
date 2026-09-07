@@ -5,10 +5,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/alloc/vite-plugin-bare.git"
+    "url": "https://github.com/aleclarson/vite-plugin-bare.git"
   },
   "bin": {
-    "bare-vite": "./dist/cli.js"
+    "bare-vite": "dist/cli.js"
   },
   "files": [
     "dist"
