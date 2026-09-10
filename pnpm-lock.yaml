@@ -11,6 +11,9 @@ importers:
       '@alloc/cmd-ts':
         specifier: ^0.17.1
         version: 0.17.1(cac@6.7.14)
+      bare-module-traverse:
+        specifier: ^2.5.1
+        version: 2.5.1(bare-buffer@3.7.1)(bare-url@2.5.4)
       bare-pack:
         specifier: ^2.2.2
         version: 2.2.2(bare-abort-controller@1.1.2)(bare-buffer@3.7.1)(bare-events@2.9.2(bare-abort-controller@1.1.2))(bare-url@2.5.4)

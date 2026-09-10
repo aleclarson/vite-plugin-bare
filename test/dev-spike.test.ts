@@ -9,6 +9,7 @@ import { afterEach, describe, expect, it } from "vitest"
 import WebSocket from "ws"
 
 import bare from "../src/index.js"
+import { startBareViteRuntime } from "../src/runtime/bootstrap.js"
 import { createBareViteTransport, type BareSocket } from "../src/runtime/transport.js"
 
 class NodeSocketAdapter extends EventEmitter implements BareSocket {
@@ -76,6 +77,73 @@ describe("Bare feasibility spike", () => {
 
     expect(application.externalResolved).toBe(true)
     await runner.close()
+  })
+
+  it("starts and restarts with host-owned external modules", async () => {
+    const root = await mkdtemp(join(tmpdir(), "vite-plugin-bare-evaluator-"))
+    const events: string[] = []
+    const externalIds: string[] = []
+    const ownedModule = { value: "packaged-value" }
+
+    class PackagedEvaluator extends ESModulesEvaluator {
+      override async runExternalModule(id: string) {
+        externalIds.push(id)
+        if (id !== "bare-packaged-test") throw new Error(`Unexpected external: ${id}`)
+        return ownedModule
+      }
+    }
+
+    let runtime:
+      | Awaited<ReturnType<typeof startBareViteRuntime<(value: string) => void>>>
+      | undefined
+
+    try {
+      await writeFile(
+        join(root, "application.ts"),
+        `import { value } from 'bare-packaged-test'
+         let report
+         export function start(context) { report = context; report(value) }
+         export function dispose() { report('disposed') }`,
+      )
+      server = await createServer({
+        root,
+        configFile: false,
+        logLevel: "silent",
+        environments: { bare: { resolve: { builtins: ["bare-packaged-test"] } } },
+        plugins: [bare({ entry: "./application.ts" })],
+      })
+      await server.listen()
+      const address = server.httpServer?.address()
+
+      if (!address || typeof address === "string") throw new Error("Missing Vite port")
+
+      runtime = await startBareViteRuntime({
+        serverUrl: `ws://127.0.0.1:${address.port}/__bare_vite?environment=bare`,
+        entry: "/application.ts",
+        context: (value: string) => {
+          events.push(value)
+        },
+        globals: [],
+        evaluator: new PackagedEvaluator(),
+        transport: { createSocket: (url) => new NodeSocketAdapter(url) },
+      })
+      expect(events).toEqual(["packaged-value"])
+      ownedModule.value = "updated-packaged-value"
+      await runtime.application.restart()
+      expect(events).toEqual(["packaged-value", "disposed", "updated-packaged-value"])
+      expect(externalIds).toEqual(["bare-packaged-test", "bare-packaged-test"])
+      await runtime.close()
+      runtime = undefined
+      expect(events.at(-1)).toBe("disposed")
+    } finally {
+      await runtime?.close()
+      await server?.close()
+      server = undefined
+      await rm(root, {
+        recursive: true,
+        force: true,
+      })
+    }
   })
 
   it("applies accepted HMR without reconnecting the runtime", async () => {

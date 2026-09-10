@@ -72,7 +72,7 @@ export async function buildBareApp(options: BuildBareAppOptions = {}): Promise<B
   const result = await build({
     root: config.root,
     ...(loaded.configFile === undefined ? {} : { configFile: loaded.configFile }),
-    plugins: [bareBuildExternals(config)],
+    plugins: [bareBuildPlugin(config)],
     build: {
       outDir: intermediateDir,
       emptyOutDir: true,
@@ -127,11 +127,19 @@ async function loadDiscoveredConfig(
   return loadBareViteConfig(root, configFile)
 }
 
-function bareBuildExternals(config: NormalizedBareViteConfig): Plugin {
+function bareBuildPlugin(config: NormalizedBareViteConfig): Plugin {
   return {
-    name: "vite-plugin-bare:build-externals",
+    name: "vite-plugin-bare:build",
     apply: "build",
     enforce: "pre",
+    config(userConfig) {
+      return {
+        define: {
+          "process.env.NODE_ENV": JSON.stringify("production"),
+          ...userConfig.define,
+        },
+      }
+    },
     resolveId(source) {
       if (createBareExternalPredicate(config)(source)) {
         return {

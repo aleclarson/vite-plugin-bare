@@ -41,6 +41,7 @@
   },
   "dependencies": {
     "@alloc/cmd-ts": "^0.17.1",
+    "bare-module-traverse": "^2.5.1",
     "bare-pack": "^2.2.2",
     "ws": "^8.18.3"
   },

@@ -1,5 +1,5 @@
 import type { HotPayload } from "vite"
-import type { ModuleRunner } from "vite/module-runner"
+import type { ModuleEvaluator, ModuleRunner } from "vite/module-runner"
 
 import { DEFAULT_RUNTIME_GLOBALS, type BareRuntimeGlobal } from "../core/runtime.js"
 import { BareApplication } from "./application.js"
@@ -22,6 +22,12 @@ export interface StartBareViteRuntimeOptions<Context = unknown> {
   entry: string
   /** Value passed to the application's optional `start(context)` export. */
   context: Context
+  /**
+   * Evaluator for application code and external modules, such as modules packaged by the host.
+   *
+   * @defaultValue Vite's `ESModulesEvaluator`.
+   */
+  evaluator?: ModuleEvaluator
   /**
    * Bare process event emitter used to catch fatal runtime errors.
    *
@@ -100,7 +106,7 @@ export async function startBareViteRuntime<Context = unknown>(
       sourcemapInterceptor: "prepareStackTrace",
       hmr: true,
     },
-    new ESModulesEvaluator(),
+    options.evaluator ?? new ESModulesEvaluator(),
   )
 
   application = new BareApplication(runner, options.entry, options.context)

@@ -1,5 +1,7 @@
 import { existsSync, statSync } from "node:fs"
-import { resolve } from "node:path"
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises"
+import { tmpdir } from "node:os"
+import { join, resolve } from "node:path"
 
 import { describe, expect, it } from "vitest"
 
@@ -32,5 +34,35 @@ describe("production pipeline", () => {
 
     expect(result.artifact).toBe(resolve(root, "dist/direct/bundle.bare"))
     expect(existsSync(result.artifact)).toBe(true)
+  })
+})
+
+describe("production environment", () => {
+  it.each([undefined, "custom"])("defines NODE_ENV with override %s", async (override) => {
+    const root = await mkdtemp(join(tmpdir(), "vite-plugin-bare-env-"))
+
+    try {
+      await writeFile(join(root, "entry.js"), "export const mode = process.env.NODE_ENV")
+      await writeFile(
+        join(root, "vite.config.mjs"),
+        `export default ${JSON.stringify({
+          define: override ? { "process.env.NODE_ENV": JSON.stringify(override) } : {},
+        })}`,
+      )
+      const result = await buildBareApp({
+        root,
+        config: { entry: "./entry.js" },
+      })
+
+      const code = await readFile(result.intermediateEntry, "utf8")
+
+      expect(code).not.toContain("process.env.NODE_ENV")
+      expect(code).toContain(JSON.stringify(override ?? "production"))
+    } finally {
+      await rm(root, {
+        recursive: true,
+        force: true,
+      })
+    }
   })
 })
