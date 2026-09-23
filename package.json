@@ -1,6 +1,6 @@
 {
   "name": "vite-plugin-bare",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Run Vite module graphs in Bare during development and package them for production.",
   "license": "MIT",
   "repository": {
