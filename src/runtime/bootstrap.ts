@@ -1,5 +1,9 @@
 import type { HotPayload } from "vite"
-import type { ModuleEvaluator, ModuleRunner } from "vite/module-runner"
+import type {
+  EvaluatedModules,
+  ModuleEvaluator,
+  ModuleRunner,
+} from "vite/module-runner"
 
 import { DEFAULT_RUNTIME_GLOBALS, type BareRuntimeGlobal } from "../core/runtime.js"
 import { BareApplication } from "./application.js"
@@ -28,6 +32,11 @@ export interface StartBareViteRuntimeOptions<Context = unknown> {
    * @defaultValue Vite's `ESModulesEvaluator`.
    */
   evaluator?: ModuleEvaluator
+  /**
+   * Pre-populated module cache, such as modules persisted from an earlier worklet. The runner
+   * still validates every seeded module with the development server before evaluating it.
+   */
+  evaluatedModules?: EvaluatedModules
   /**
    * Bare process event emitter used to catch fatal runtime errors.
    *
@@ -105,6 +114,7 @@ export async function startBareViteRuntime<Context = unknown>(
       transport,
       sourcemapInterceptor: "prepareStackTrace",
       hmr: true,
+      evaluatedModules: options.evaluatedModules,
     },
     options.evaluator ?? new ESModulesEvaluator(),
   )
