@@ -1,9 +1,5 @@
 import type { HotPayload } from "vite"
-import type {
-  EvaluatedModules,
-  ModuleEvaluator,
-  ModuleRunner,
-} from "vite/module-runner"
+import type { EvaluatedModules, ModuleEvaluator, ModuleRunner } from "vite/module-runner"
 
 import { DEFAULT_RUNTIME_GLOBALS, type BareRuntimeGlobal } from "../core/runtime.js"
 import { BareApplication } from "./application.js"
@@ -33,8 +29,8 @@ export interface StartBareViteRuntimeOptions<Context = unknown> {
    */
   evaluator?: ModuleEvaluator
   /**
-   * Pre-populated module cache, such as modules persisted from an earlier worklet. The runner
-   * still validates every seeded module with the development server before evaluating it.
+   * Pre-populated module cache, such as modules persisted from an earlier worklet. The runner still
+   * validates every seeded module with the development server before evaluating it.
    */
   evaluatedModules?: EvaluatedModules
   /**
@@ -114,7 +110,9 @@ export async function startBareViteRuntime<Context = unknown>(
       transport,
       sourcemapInterceptor: "prepareStackTrace",
       hmr: true,
-      evaluatedModules: options.evaluatedModules,
+      ...(options.evaluatedModules !== undefined
+        ? { evaluatedModules: options.evaluatedModules }
+        : {}),
     },
     options.evaluator ?? new ESModulesEvaluator(),
   )
